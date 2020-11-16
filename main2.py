@@ -5,7 +5,7 @@ from BOT_TOKEN import member_list,bot_token
 from discord.ext import commands,tasks
 from itertools import cycle
 from HEADERS import headers
-import checker
+
 
 #client = commands.Bot(command_prefix ="!")#mcbot
 client = commands.Bot(command_prefix =".")#codebot
@@ -24,7 +24,7 @@ async def on_ready():
 async def kick(ctx,member:discord.Member,*,reason =None):
     if str(member) in member_list :
         await ctx.send("not allowed to kick moderators")
-    elif str(member) == "mcbot#2471":
+    elif str(member) == client.user:
         await ctx.send("not allowed to kick me")
     else:
         await member.kick(reason =reason)
