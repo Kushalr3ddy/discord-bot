@@ -19,6 +19,15 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online,activity=discord.Game(".help"))
     print(f"logged in as {client.user}")
 
+@client.event
+async def on_command_error(ctx,error):
+    if isinstance(error,commands.MissingRequiredArgument):
+        await ctx.send("arguments missing")
+    elif isinstance(error,commands.MissingPermissions):
+        await ctx.send("you're not allowed to do that")
+    elif isinstance(error,commands.CommandNotFound):
+        await ctx.send("command not found\ntype !help for more info")
+
 @client.command()
 @commands.has_permissions(kick_members=True)
 async def kick(ctx,member:discord.Member,*,reason =None):
@@ -114,22 +123,10 @@ def checker_function(ctx):
 async def function_name():
     functions()
 '''
-
-
-@client.event
-async def on_command_error(ctx,error):
-    if isinstance(error,commands.MissingRequiredArgument):
-        await ctx.send("arguments missing")
-    elif isinstance(error,commands.MissingPermissions):
-        await ctx.send("you're not allowed to do that")
-    elif isinstance(error,commands.CommandNotFound):
-        await ctx.send("command not found\ntype !help for more info")
-
-@client.command()
+"""@client.command()
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx,amount=1):
-    await ctx.channel.purge(limit=amount+1)
+    await ctx.channel.purge(limit=amount+1)"""
 
-
+    )
 client.run(bot_token)
- 
