@@ -8,7 +8,7 @@ client = commands.Bot(command_prefix=">")
 @client.event
 async def on_ready():
     print(f"logged in as {client.user}")
-
+    print(f"on {str(len(client.servers))}")
 @client.command()
 async def hello(ctx):
     await ctx.send(f"hello there {str(ctx.author)}")

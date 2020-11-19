@@ -1,42 +1,68 @@
 import discord
 from discord import message,Member
 from discord.ext import commands
-from random import randint
+from random import randint,choice
+import keep_alive
 import wikia
-#link = "https://www.youtube.com/channel/UClvm_DttrJH83mKYV6T16Kw?sub_confirmation=1"
-danbot_token = "Nzc3NzkzNjU3MzQwMjk3MjM2.X7Imyg.5O75n829r-yeuIEQDIWR0XLxgA4"
+
+danbot_token = "Nzc3NzkzNjU3MzQwMjk3MjM2.X7Imyg.6NidwiHIDFMdMnP2tRTICC0UGJo"
 client = commands.Bot(command_prefix=">")
 #####events
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.online,activity=discord.Game("krunker.io"))
+    await client.change_presence(status=discord.Status.online,activity=discord.Game("krunker.io| >help"))
     print(f"logged in as {client.user}")
 ###
 
 #####commands
 @client.command()
 async def hello(ctx):
+    """returns hello"""
     await ctx.send(f"hello there {ctx.author}")
 
 @client.command()
 async def joined(ctx,member:discord.Member):
+    """Shows when a user joined the server"""
     await ctx.send(f"{member.name} joined on {member.joined_at}")
 
 @client.command()
 async def repeat(ctx,message):
-    """Repeats a message multiple times."""
+    """Repeats a message
+    usage: >repeat <your-message>"""
     await ctx.send(message)
 
 @client.command()
 async def roll(ctx):
-    await ctx.send(randint(1,101))
-###
+    """random number between 1 to 100"""
+    await ctx.send(f"{ctx.author} rolled a {randint(1,101)}")
 
-######error_handling
+@client.command()
+async def flip(ctx):
+    """flips a coin\nreturns heads or tails"""
+    coin = ["heads","tails"]
+    await ctx.send(f"{ctx.author} flipped {choice(coin)}")
+
+@client.command()
+async def yt(ctx):
+    """Dan's youtube channel"""
+    await ctx.send("https://www.youtube.com/channel/UClvm_DttrJH83mKYV6T16Kw?sub_confirmation=1")###
+
 @client.command()
 @commands.has_permissions(manage_messages=True)
 async def clear(ctx,amount=1):
+    """clears specified no of messages (default is 1)\n
+    usage: >clear <no-of-messages>"""
     await ctx.channel.purge(limit=amount+1)
+
+@client.command()
+async def nudge(ctx, users: discord.Greedy[discord.User]):
+    #user = await bot.get_user_info(user_id)
+    #link = await ctx.channel.create_invite(max_age = 300)
+    for user in users:
+        await user.send(f"{ctx.author} nudged you")
+        #await user.send(link)
+
+######error_handling
 @client.event
 async def on_command_error(ctx,error):
     if isinstance(error,commands.MissingRequiredArgument):
@@ -45,7 +71,10 @@ async def on_command_error(ctx,error):
         await ctx.send("you're not allowed to do that")
     elif isinstance(error,commands.CommandNotFound):
         await ctx.send("command not found\ntype >help for more info")
-###
 
+
+
+
+keep_alive.keep_alive()
 client.run(danbot_token)
     

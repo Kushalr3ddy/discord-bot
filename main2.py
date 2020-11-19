@@ -1,7 +1,7 @@
 import discord
 import os
+from BOT_TOKEN import *
 from discord import message, member
-from BOT_TOKEN import member_list,bot_token
 from discord.ext import commands,tasks
 from itertools import cycle
 from HEADERS import headers
@@ -31,9 +31,7 @@ async def on_command_error(ctx,error):
 @client.command()
 @commands.has_permissions(kick_members=True)
 async def kick(ctx,member:discord.Member,*,reason =None):
-    if str(member) in member_list :
-        await ctx.send("not allowed to kick moderators")
-    elif str(member) == client.user:
+    if str(member) == str(client.user):
         await ctx.send("not allowed to kick me")
     else:
         await member.kick(reason =reason)
@@ -60,7 +58,9 @@ async def hello(ctx):
 async def HELLO(ctx):
     
     await ctx.send(f"hello there ")
-
+@client.command()
+async def clear(ctx,amount=1):
+    await ctx.channel.purge(limit=amount+1)
 
 @client.command()
 async def unban(ctx,*,member):
@@ -76,8 +76,11 @@ async def unban(ctx,*,member):
 @client.command()
 async def joined(ctx, member: discord.Member):
     """Says when a member joined."""
-    await ctx.send(f'{member.name} joined in {member.joined_at}'
+    await ctx.send(f'{member.name} joined in {member.joined_at}')
 
+@client.command()
+async def ping(ctx):
+    await ctx.send(f"{round((client.latency)*1000,2)}ms")
 """
 @commands.group(invoke_without_command=True)
 async def your_command_name(self, ctx):
@@ -128,5 +131,5 @@ async def function_name():
 async def clear(ctx,amount=1):
     await ctx.channel.purge(limit=amount+1)"""
 
-    )
+    
 client.run(bot_token)
