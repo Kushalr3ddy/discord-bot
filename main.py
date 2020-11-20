@@ -3,12 +3,20 @@ from discord.ext import commands
 from BOT_TOKEN import *
 import wikipedia
 
-client = commands.Bot(command_prefix=">")
+client = commands.Bot(command_prefix=".")
 
 @client.event
 async def on_ready():
     print(f"logged in as {client.user}")
-    print(f"on {str(len(client.servers))}")
+    #print(f"on {str(len(client.servers))}")
+
+@client.event
+async def on_message(ctx):
+    if ctx.author == client.user:
+        return
+    print(f"{ctx.author}:{ctx.content}")
+    await client.process_commands(ctx)
+
 @client.command()
 async def hello(ctx):
     await ctx.send(f"hello there {str(ctx.author)}")
@@ -28,4 +36,4 @@ async def wiki(ctx,search=None,lines=3):
         await ctx.send("search not available")
 
 
-client.run(bot_token)
+client.run(krunk_bot)

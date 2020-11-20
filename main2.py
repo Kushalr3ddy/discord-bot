@@ -28,6 +28,7 @@ async def on_command_error(ctx,error):
     elif isinstance(error,commands.CommandNotFound):
         await ctx.send("command not found\ntype !help for more info")
 
+'''
 @client.command()
 @commands.has_permissions(kick_members=True)
 async def kick(ctx,member:discord.Member,*,reason =None):
@@ -37,7 +38,7 @@ async def kick(ctx,member:discord.Member,*,reason =None):
         await member.kick(reason =reason)
         await ctx.send(f"kicked {member.mention}")
 
-'''
+
 ########not to be used untill required######
 
 @client.command()
@@ -62,7 +63,7 @@ async def HELLO(ctx):
 async def clear(ctx,amount=1):
     await ctx.channel.purge(limit=amount+1)
 
-@client.command()
+'''@client.command()
 async def unban(ctx,*,member):
     banned_users = await ctx.guild.bans()
     member_name, discriminator = member.split("#")
@@ -71,7 +72,7 @@ async def unban(ctx,*,member):
         if (user.name,user.discriminator) == (member_name,discriminator):
             await ctx.guild.unban(user)
             await ctx.send(f"unbanned {user.mention}")
-            return
+            return'''
 
 @client.command()
 async def joined(ctx, member: discord.Member):
