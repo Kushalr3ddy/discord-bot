@@ -15,6 +15,8 @@ async def on_message(ctx):
     if ctx.author == client.user:
         return
     print(f"{ctx.author}:{ctx.content}")
+    file1 = open("myfile.txt", "a")  # append mode 
+    file1.write(f"{ctx.author}:{ctx.content}\n") 
     await client.process_commands(ctx)
 
 @client.command()
