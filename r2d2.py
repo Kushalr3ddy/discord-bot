@@ -8,7 +8,8 @@ from random import randint,choice
 from tester import check
 import keep_alive
 import wikipedia
-
+from datetime.datetime import now
+mods = []
 cmd =""
 client = commands.Bot(command_prefix= ";")
 #####events
@@ -21,21 +22,22 @@ async def on_ready():
 async def on_message(ctx):
     if str(ctx.author) == str(client.user):
         return
-    #print(f"{ctx.author}:{ctx.content}")
+    if str(ctx.author) in mods:
+        return
+
+    #print(f"{now.strftime("%d/%m/%Y %H:%M:%S")}|{ctx.author}:{ctx.author.id}:{ctx.content}")
     file1 = open("myfile.txt", "a")  # append mode 
     file1.write(f"{ctx.author}:{ctx.content}\n") 
     result = check(str(ctx.content))
     if result == True:
         #await ctx.channel.send(f"Thats some strong language {ctx.author.mention}")
         #me = await client.get_user_info(ctx.author)
-        await ctx.author.send(content='seems like you used some strong language in the server{}'.format(ctx.author.mention))
+        #await ctx.author.send(content='seems like you used some strong language in the server{}\n{}'.format(ctx.author.mention,ctx.content))
         #await ctx.send_message(ctx.author, "#The message")
+        pass
     await client.process_commands(ctx)
 
 ###
-@client.event
-async def on_member_join(member):
-    await member.send("welcome to dsu 2024 discord server\nget your role according to your section in #section-roles\n and make sure to read the #rules")
 
 #####commands
 @client.command()
@@ -46,10 +48,7 @@ async def hello(ctx):
 @client.command()
 async def joined(ctx,member:discord.Member):
     """Shows when a user joined the server"""
-    if member == None:
-        await ctx.send(f"usage:\n;joined <user-name>")
-    else:
-        await ctx.send(f"{member.name} joined on {member.joined_at}")
+    await ctx.send(f"{member.name} joined on {member.joined_at}")
 
 @client.command()
 async def repeat(ctx,message):
@@ -67,7 +66,9 @@ async def flip(ctx):
     """flips a coin\nreturns heads or tails"""
     coin = ["heads","tails"]
     await ctx.send(f"{ctx.author} flipped {choice(coin)}")
-
+@client.command()
+async def source(ctx):
+    await ctx.send("https://repl.it/@KushalReddy1/SmugFearfulGlitch")
 
 
 ###
@@ -105,6 +106,6 @@ async def on_command_error(ctx,error):
 
 
 
-#keep_alive.keep_alive()
+keep_alive.keep_alive()
 client.run(token)
     
