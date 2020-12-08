@@ -1,10 +1,11 @@
 
-from tkn import bot_token
+from tkn import token
 import discord
 from discord import message,Member
 from discord.ext import commands
 from discord.ext.commands import Greedy
 from random import randint,choice
+from tester import check
 import keep_alive
 import wikipedia
 
@@ -13,19 +14,28 @@ client = commands.Bot(command_prefix= ";")
 #####events
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.online,activity=discord.Game(";help"))
+    await client.change_presence(status=discord.Status.online,activity=discord.Game("under testing do not ping"))
     print(f"logged in as {client.user}")
 
 @client.event
 async def on_message(ctx):
-    if ctx.author == client.user:
+    if str(ctx.author) == str(client.user):
         return
     #print(f"{ctx.author}:{ctx.content}")
     file1 = open("myfile.txt", "a")  # append mode 
     file1.write(f"{ctx.author}:{ctx.content}\n") 
+    result = check(str(ctx.content))
+    if result == True:
+        #await ctx.channel.send(f"Thats some strong language {ctx.author.mention}")
+        #me = await client.get_user_info(ctx.author)
+        await ctx.author.send(content='seems like you used some strong language in the server{}'.format(ctx.author.mention))
+        #await ctx.send_message(ctx.author, "#The message")
     await client.process_commands(ctx)
 
 ###
+@client.event
+async def on_member_join(member):
+    await member.send("welcome to dsu 2024 discord server\nget your role according to your section in #section-roles\n and make sure to read the #rules")
 
 #####commands
 @client.command()
@@ -36,7 +46,10 @@ async def hello(ctx):
 @client.command()
 async def joined(ctx,member:discord.Member):
     """Shows when a user joined the server"""
-    await ctx.send(f"{member.name} joined on {member.joined_at}")
+    if member == None:
+        await ctx.send(f"usage:\n;joined <user-name>")
+    else:
+        await ctx.send(f"{member.name} joined on {member.joined_at}")
 
 @client.command()
 async def repeat(ctx,message):
@@ -55,14 +68,8 @@ async def flip(ctx):
     coin = ["heads","tails"]
     await ctx.send(f"{ctx.author} flipped {choice(coin)}")
 
-@client.command()
-async def link(ctx):
-    """Zoom link for classes"""
-    await ctx.send("https://zoom.us/j/95398188063?pwd=T3pOeWFlS1JxaG03WkNibHJVT3Fldz09")
 
-@client.command()
-async def conference(ctx):
-    await ctx.send("https://zoom.us/j/5516619991")
+
 ###
 
 
@@ -73,14 +80,6 @@ async def clear(ctx,amount=1):
     usage: ;clear <no-of-messages>"""
     await ctx.channel.purge(limit=amount+1)
 
-@client.command()
-async def nudge(ctx, users: Greedy[discord.User]):
-    """nudges the user mentioned in dm"""
-    #user = await bot.get_user_info(user_id)
-    #link = await ctx.channel.create_invite(max_age = 300)
-    for user in users:
-        await user.send(f"{ctx.author} nudged you")
-        #await user.send(link)
 
 @client.command()
 async def  wiki(ctx,query,lines=2):
@@ -91,7 +90,8 @@ async def  wiki(ctx,query,lines=2):
         else:
             await ctx.send(wikipedia.summary(query,lines))
     except:
-            await ctx.send("search not found or some error has occured")
+        return
+        #await ctx.send("search not found or some error has occured")
 ######error_handling
 @client.event
 async def on_command_error(ctx,error):
@@ -105,6 +105,6 @@ async def on_command_error(ctx,error):
 
 
 
-keep_alive.keep_alive()
-client.run(bot_token)
+#keep_alive.keep_alive()
+client.run(token)
     
